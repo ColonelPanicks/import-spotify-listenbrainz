@@ -37,10 +37,11 @@ listens.each do |track|
       puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
       uri = track['spotify_track_uri'].split(':').last
 
+      # Retrieve metadata from local cache if present
       if durations.has_key? uri 
-        puts "Retrieving duration from cache"
         duration = durations[uri]
       else
+        # Safely try to grab duration from Spotify API
         begin
           song_metadata = RSpotify::Track.find(uri)
         rescue RestClient::NotFound
