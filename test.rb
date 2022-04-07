@@ -37,7 +37,7 @@ listens.each do |track|
       begin
         uri = track['spotify_track_uri'].split(':').last
       rescue NoMethodError
-        puts "Track has no name - probably a local file or some glitch, skipping..."
+        puts "Track has no name - either a nil entry, local file or podcast, skipping..."
         next
       end
 
@@ -45,13 +45,15 @@ listens.each do |track|
       if durations.has_key? uri 
         duration = durations[uri]
       else
-        puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
         # Safely try to grab duration from Spotify API
+        # If it fails, sleep for 30s to allow API limits to reset before trying again
         begin
+          puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
           song_metadata = RSpotify::Track.find(uri)
         rescue RestClient::NotFound
-          puts "Rate limit hit, rerun (will use cache of previous song durations)"
-          exit
+          puts "Rate limit hit, waiting for 30s before retrying"
+          sleep 60
+          retry
         end
         duration = song_metadata.duration_ms
         durations[uri] = duration
