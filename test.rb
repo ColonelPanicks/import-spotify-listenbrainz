@@ -50,7 +50,7 @@ listens.each do |track|
         begin
           song_metadata = RSpotify::Track.find(uri)
         rescue RestClient::NotFound
-          puts "Rate limit hit, rerun (will use cache of previous song durations"
+          puts "Rate limit hit, rerun (will use cache of previous song durations)"
           exit
         end
         duration = song_metadata.duration_ms
