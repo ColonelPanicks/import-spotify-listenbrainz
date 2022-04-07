@@ -1,4 +1,11 @@
 
+## Features
+
+- Validation of listen entries
+    - This ensures that listens comply with [ListenBrainz standard](https://listenbrainz.readthedocs.io/en/latest/dev/api/#post--1-submit-listens)
+    - Tracks with a listen time of <5s are automatically skipped (to reduce impact on Spotify API calls to check playtime vs song duration)
+    - Every duration check of song duration from Spotify API is cached in `durations.yaml`, this allows for quicker rerunning and prevents calling the API for multiple listens of a song (all the optimisation!)
+
 ## To Do
 
 - Automatically reject playtimes <5s
