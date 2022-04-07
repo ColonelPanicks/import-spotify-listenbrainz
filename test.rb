@@ -35,7 +35,12 @@ listens.each do |track|
 
       # Gather song metadata from Spotify and compare it to playtime
       puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
-      uri = track['spotify_track_uri'].split(':').last
+      begin
+        uri = track['spotify_track_uri'].split(':').last
+      rescue NoMethodError
+        puts "Track has no name - probably a local file or some glitch, skipping..."
+        next
+      end
 
       # Retrieve metadata from local cache if present
       if durations.has_key? uri 
