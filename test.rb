@@ -55,12 +55,12 @@ listens.each_with_index do |track, index|
         duration = durations[uri]
       else
         # Safely try to grab duration from Spotify API
-        # If it fails, sleep for 30s to allow API limits to reset before trying again
+        # If it fails, sleep for 60s to allow API limits to reset before trying again
         begin
           puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
           song_metadata = RSpotify::Track.find(uri)
         rescue RestClient::NotFound
-          puts "Rate limit hit, waiting for 30s before retrying"
+          puts "Rate limit hit, waiting for 60s before retrying"
           sleep 60
           retry
         end
