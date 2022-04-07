@@ -24,13 +24,21 @@ file = File.read('data/endsong_0.json')
 listens = JSON.parse(file)
 
 valid_listens = []
-listens.each do |track|
+listens.each_with_index do |track, index|
+  puts "Processed: #{index} (valid: #{valid_listens.count})"
   # If track didn't normally end then we need to work out if it played at least half (or 4 mins, whichever is lower)
   if track['reason_end'] != 'trackdone'
 
     # If playtime is less than 4 mins (280s, 280000ms) then we'll need to compare playtime to song duration
     ## Making this value a float forces decimal output from division, otherwise it's an integer
     playtime = track['ms_played'].to_f 
+
+    # Consider the track a no listen if playtime <5s (5000ms)
+    if playtime < 5000
+      puts "Playtime less than 5s, skipping"
+      next
+    end
+
     if playtime < 280000
 
       # Gather song metadata from Spotify and compare it to playtime
@@ -43,6 +51,7 @@ listens.each do |track|
 
       # Retrieve metadata from local cache if present
       if durations.has_key? uri 
+        puts "Retrieving duration from cache"
         duration = durations[uri]
       else
         # Safely try to grab duration from Spotify API
