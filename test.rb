@@ -34,7 +34,6 @@ listens.each do |track|
     if playtime < 280000
 
       # Gather song metadata from Spotify and compare it to playtime
-      puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
       begin
         uri = track['spotify_track_uri'].split(':').last
       rescue NoMethodError
@@ -46,6 +45,7 @@ listens.each do |track|
       if durations.has_key? uri 
         duration = durations[uri]
       else
+        puts "Querying Spotify for: #{track['master_metadata_track_name']} (#{track['spotify_track_uri']})"
         # Safely try to grab duration from Spotify API
         begin
           song_metadata = RSpotify::Track.find(uri)
