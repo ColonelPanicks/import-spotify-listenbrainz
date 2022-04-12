@@ -20,8 +20,11 @@ else
 end
 RSpotify.authenticate(auth['client_id'], auth['client_secret'])
 
-file = File.read('data/endsong_0.json')
-listens = JSON.parse(file)
+listens = []
+Dir.glob('data/endsong_*.json') do |filename|
+  file = File.read(filename)
+  listens += JSON.parse(file)
+end
 
 valid_listens = []
 listens.each_with_index do |track, index|
@@ -88,5 +91,6 @@ listens.each_with_index do |track, index|
   end
 end
 
+File.open('valid_listens.yaml', "w") { |f| f.write(valid_listens.to_yaml) }
 puts "Total Listens Parsed: #{listens.count}"
 puts "Total Valid Listens: #{valid_listens.count}"
