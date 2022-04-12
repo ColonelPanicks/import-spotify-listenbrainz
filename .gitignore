@@ -1,1 +1,4 @@
 auth.yaml
+data/*
+durations.yaml
+valid_listens.yaml
